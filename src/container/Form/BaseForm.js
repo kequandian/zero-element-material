@@ -2,12 +2,25 @@ import React, { useReducer, useRef } from 'react';
 import { Form } from 'react-final-form';
 import useBaseForm from 'zero-element/lib/helper/form/useBaseForm';
 import { useDidMount, useWillUnmount } from 'zero-element/lib/utils/hooks/lifeCycle';
+
+import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import { getFormItem } from '@/utils/readConfig';
 import { Render } from 'zero-element-global/lib/layout';
 import { getModel } from 'zero-element/lib/Model';
 
+const useStyles = makeStyles(theme => ({
+  fields: {
+    padding: theme.spacing(2),
+  },
+  button: {
+    textAlign: 'right',
+    padding: theme.spacing(1),
+  }
+}));
+
 export default function BaseForm(props) {
+  const classes = useStyles();
   const formRef = useRef({});
   const [, forceUpdate] = useReducer(x => x + 1, 0);
   const { namespace, config, onClose, onSubmit } = props;
@@ -75,14 +88,14 @@ export default function BaseForm(props) {
     function onSubmit() {
       formRef.current.onSubmit();
     }
-    return <div>
+    return <div className={classes.button}>
       <Button onClick={handleReset}>重置</Button>
-      <Button color="primary" htmlType="submit" onClick={onSubmit}>保存</Button>
+      <Button color="primary" onClick={onSubmit}>保存</Button>
     </div>
   }
 
   return <>
-    <div>
+    <div className={classes.fields}>
       <Form
         initialValues={initData.current}
         onSubmit={handleSubmitForm}

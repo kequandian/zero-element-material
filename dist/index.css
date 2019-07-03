@@ -1,22 +1,4 @@
-.ZEleM-Form-ruleTips .ant-tooltip-content .ant-tooltip-inner {
-  background: #ff4d4f;
-}
-.ZEleM-Form-ruleTips .ant-tooltip-content .ant-tooltip-arrow {
-  border-top-color: #ff4d4f;
-}
-
-.ZEleM-Form-ruleTips-error.ant-tooltip-open,
-.ZEleM-Form-ruleTips-error.ant-tooltip-open:hover,
-.ZEleM-Form-ruleTips-error.ant-tooltip-open:focus {
-  border-color: #ff4d4f;
-  box-shadow: 0 0 0 2px  #ff4d4f33;
-}
-
-.ZEleM-Form-vertical>.ant-row ,
-.ZEleM-Form-horizontal>.ant-row {
-  margin-bottom: 8px;
-}
-.ZEleM-Form-horizontal .ZEleM-Form-item {
+.ZEleM-Form-item {
   display: flex;
   align-items: center;
   margin-bottom: 8px;
@@ -24,6 +6,6 @@
 .ZEleM-Form-item-label {
   margin-right: 8px;
 }
-.ZEleM-Form-horizontal .ZEleM-Form-item-element {
+.ZEleM-Form-item-element {
   flex: 1;
 }
