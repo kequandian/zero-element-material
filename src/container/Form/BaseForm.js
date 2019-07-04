@@ -1,13 +1,12 @@
 import React, { useReducer, useRef } from 'react';
-import { Form } from 'react-final-form';
 import useBaseForm from 'zero-element/lib/helper/form/useBaseForm';
 import { useDidMount, useWillUnmount } from 'zero-element/lib/utils/hooks/lifeCycle';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import { getFormItem } from '@/utils/readConfig';
-import { Render } from 'zero-element-global/lib/layout';
 import { getModel } from 'zero-element/lib/Model';
+
+import NornalForm from '@/components/NormalForm';
 
 const useStyles = makeStyles(theme => ({
   fields: {
@@ -24,8 +23,7 @@ export default function BaseForm(props) {
   const formRef = useRef({});
   const [, forceUpdate] = useReducer(x => x + 1, 0);
   const { namespace, config, onClose, onSubmit } = props;
-  const { API = {}, layout = 'Empty', fields, layoutConfig = {} } = config;
-  const { layoutType = 'vertical' } = layoutConfig;
+  const { API = {} } = config;
   const formProps = useBaseForm({
     namespace,
     modelPath: 'formData',
@@ -96,28 +94,14 @@ export default function BaseForm(props) {
 
   return <>
     <div className={classes.fields}>
-      <Form
+      <NornalForm
         initialValues={initData.current}
         onSubmit={handleSubmitForm}
-        render={({ handleSubmit, form, submitting, pristine, values }) => {
-          formRef.current = {
-            form,
-            values,
-            onSubmit: handleSubmit,
-          };
-          model.setState('formData', values);
-          return <form
-            className={`ZEleM-Form-${layoutType}`}
-            onSubmit={handleSubmit}
-          >
-            <Render n={layout} {...layoutConfig}>
-              {fields.map(field => getFormItem(field, modelStatus, {
-                namespace,
-                values,
-              }))}
-            </Render>
-          </form>
-        }}
+        formRef={formRef}
+        model={model}
+        config={config}
+        modelStatus={modelStatus}
+        namespace={namespace}
       />
     </div>
     {renderFooter()}

@@ -20,6 +20,8 @@ CSet({
 FITSet({
   plain: Load('formItemType/Plain'),
   input: Load('formItemType/Input'),
+  'search-input': Load('formItemType/SearchInput'),
+  'search-select': Load('formItemType/SearchSelect'),
 });
 
 // AITSet({

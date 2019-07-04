@@ -11,6 +11,7 @@
     "@loadable/component": "^5.10.1",
     "final-form": "^4.13.1",
     "layout-flex": "github:kequandian/layout-flex",
+    "material-table": "^1.40.1",
     "react": "^16.8.6",
     "react-contextmenu": "^2.11.0",
     "react-dnd": "^7.4.5",
