@@ -22,11 +22,12 @@ export default function BaseForm(props) {
   const classes = useStyles();
   const formRef = useRef({});
   const [, forceUpdate] = useReducer(x => x + 1, 0);
-  const { namespace, config, onClose, onSubmit } = props;
+  const { namespace, config, extraData, onClose, onSubmit } = props;
   const { API = {} } = config;
   const formProps = useBaseForm({
     namespace,
     modelPath: 'formData',
+    extraData,
   }, config);
 
   const model = getModel(namespace);
