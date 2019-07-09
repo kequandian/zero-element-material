@@ -1,39 +1,50 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import useBaseList from 'zero-element/lib/helper/list/useBaseList';
 import { useDidMount, useWillUnmount } from 'zero-element/lib/utils/hooks/lifeCycle';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Slide from '@material-ui/core/Slide';
+
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
+import CloseIcon from '@material-ui/icons/Close';
 
 import NormalTable from '../components/NormalTable';
 import NormalForm from '../components/NormalForm';
 
 import { formatTableFields } from '../utils/format';
 
-function displayName(data, key) {
-  if (data) {
-    if (typeof data === 'object') {
-      return data[key];
-    }
-    return data;
-  }
-  return '点击选择';
-}
-
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
+  root: {
+    marginTop: theme.status.frameHeight,
+  },
+  appBar: {
+    position: 'relative',
+    marginBottom: '8px',
+  },
+  title: {
+    marginLeft: theme.spacing(2),
+    flex: 1,
+  },
   search: {
     padding: '0 10px',
   },
+}));
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default ({ value, options, namespace, onChange }) => {
+export default function SearchSelect({ value, options, namespace, onChange }) {
   const classes = useStyles();
 
   const [open, setOpen] = useState(false);
-  const { title = 'title', nameField, API = {},
+  const { title = 'title', API = {},
+    idField, nameField, echoField = nameField,
     fields = [], search = {},
   } = options;
   const { field = 'search', ...restSearch } = search;
@@ -47,12 +58,18 @@ export default ({ value, options, namespace, onChange }) => {
   }, config);
   const { loading, data, handle, modelStatus } = listProps;
   const { onGetList, onClearList } = handle;
+  const { formData } = modelStatus;
+  const [v, setV] = useState(value);
+  const formDataValue = formData[echoField];
 
   useDidMount(_ => {
     if (API.listAPI) {
       onGetList({});
     }
   });
+  useEffect(_ => {
+    setV(formDataValue || '');
+  }, [formDataValue]);
   useWillUnmount(onClearList);
 
   function switchOpenState() {
@@ -62,7 +79,8 @@ export default ({ value, options, namespace, onChange }) => {
     console.log('handleChangePage', page);
   }
   function handleSave(e, rowData) {
-    onChange(rowData);
+    onChange(rowData[idField]);
+    setV(rowData[nameField]);
     switchOpenState();
   }
   function queryData(data) {
@@ -75,43 +93,55 @@ export default ({ value, options, namespace, onChange }) => {
 
   return <Fragment>
     <Button variant="contained" onClick={switchOpenState}>
-      {displayName(value, nameField)}
+      {v}
     </Button>
     <Dialog
-      fullWidth={true}
+      fullScreen={true}
       open={open}
       onClose={switchOpenState}
+      TransitionComponent={Transition}
     >
-      <DialogTitle>{title}</DialogTitle>
-      <div>
-        {field ? (
-          <div className={classes.search}>
-            <NormalForm
-              onSubmit={queryData}
-              config={{
-                fields: [
-                  {
-                    field, type: 'search-input', options: {
-                      onSubmit: queryData,
-                      ...restSearch,
+      <div className={classes.root}>
+        <AppBar className={classes.appBar}>
+          <Toolbar>
+            <IconButton edge="start" color="inherit" onClick={switchOpenState} aria-label="Close">
+              <CloseIcon />
+            </IconButton>
+            <Typography variant="h6" className={classes.title}>
+              {title}
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        <div>
+          {field ? (
+            <div className={classes.search}>
+              <NormalForm
+                onSubmit={queryData}
+                config={{
+                  fields: [
+                    {
+                      field, type: 'search-input', options: {
+                        onSubmit: queryData,
+                        ...restSearch,
+                      }
                     }
-                  }
-                ]
-              }}
-            />
-          </div>
-        ) : null}
-        <NormalTable
-          isLoading={loading}
-          columns={formatTableFields(fields)}
-          data={data}
-          options={{
-            search: false,
-            toolbar: false,
-          }}
-          onRowClick={handleSave}
-          onChangePage={handleChangePage}
-        />
+                  ]
+                }}
+              />
+            </div>
+          ) : null}
+          <NormalTable
+            isLoading={loading}
+            columns={formatTableFields(fields)}
+            data={data}
+            options={{
+              search: false,
+              toolbar: false,
+            }}
+            onRowClick={handleSave}
+            onChangePage={handleChangePage}
+          />
+        </div>
       </div>
       {/* <DialogActions>
         <Button onClick={switchOpenState} color="primary">
