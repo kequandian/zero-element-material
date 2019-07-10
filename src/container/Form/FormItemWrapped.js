@@ -16,7 +16,13 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function FormItemWrapped({ label, type, input, meta, options, ...rest }) {
+const Required = () => <span style={{ color: 'red' }}>*</span>;
+
+export default function FormItemWrapped({
+  label, type, input, meta, options,
+  required,
+  ...rest
+}) {
   const visibleError = Boolean(meta.error && meta.touched);
   const classes = useStyles();
 
@@ -26,12 +32,14 @@ export default function FormItemWrapped({ label, type, input, meta, options, ...
   return <div className={classes.field}>
     {label ? (
       <label className={classes.label}>
+        {required ? <Required /> : null}
         {`${label}:`}
       </label>
     ) : null}
     <Render n={type}
       className={classes.element}
       options={options} {...input} {...rest}
+      error={visibleError}
     />
   </div>
 }
