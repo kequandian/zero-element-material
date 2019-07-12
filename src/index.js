@@ -21,8 +21,11 @@ FITSet({
   hidden: Load('formItemType/Hidden'),
   plain: Load('formItemType/Plain'),
   input: Load('formItemType/Input'),
+  password: Load('formItemType/Password'),
+  tags: Load('formItemType/Tags'),
   'search-input': Load('formItemType/SearchInput'),
   'search-select': Load('formItemType/SearchSelect'),
+  'search-tree': Load('formItemType/SearchTree'),
 });
 
 // AITSet({
