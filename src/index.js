@@ -18,6 +18,7 @@ CSet({
 // });
 
 FITSet({
+  hidden: Load('formItemType/Hidden'),
   plain: Load('formItemType/Plain'),
   input: Load('formItemType/Input'),
   'search-input': Load('formItemType/SearchInput'),

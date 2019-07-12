@@ -5,6 +5,7 @@ import { set as FITSet } from 'zero-element-global/lib/formItemType';
 
 import BaseForm from '@/container/Form/BaseForm';
 
+import Hidden from '@/formItemType/Hidden';
 import Plain from '@/formItemType/Plain';
 import Input from '@/formItemType/Input';
 import SearchInput from '@/formItemType/SearchInput';
@@ -19,6 +20,7 @@ CSet({
 });
 
 FITSet({
+  'hidden': Hidden,
   'plain': Plain,
   'input': Input,
   'search-input': SearchInput,

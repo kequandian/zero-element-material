@@ -44,7 +44,7 @@ export default function SearchSelect({ value, options, namespace, onChange }) {
 
   const [open, setOpen] = useState(false);
   const { title = 'title', API = {},
-    idField, nameField, echoField = nameField,
+    idField, nameField,
     fields = [], search = {},
   } = options;
   const { field = 'search', ...restSearch } = search;
@@ -58,9 +58,7 @@ export default function SearchSelect({ value, options, namespace, onChange }) {
   }, config);
   const { loading, data, handle, modelStatus } = listProps;
   const { onGetList, onClearList } = handle;
-  const { formData } = modelStatus;
-  const [v, setV] = useState(value);
-  const formDataValue = formData[echoField];
+  const [v, setV] = useState(value[nameField]);
 
   useDidMount(_ => {
     if (API.listAPI) {
@@ -68,8 +66,8 @@ export default function SearchSelect({ value, options, namespace, onChange }) {
     }
   });
   useEffect(_ => {
-    setV(formDataValue || '');
-  }, [formDataValue]);
+    setV(value[nameField] || '');
+  }, [value, nameField]);
   useWillUnmount(onClearList);
 
   function switchOpenState() {
@@ -79,9 +77,11 @@ export default function SearchSelect({ value, options, namespace, onChange }) {
     console.log('handleChangePage', page);
   }
   function handleSave(e, rowData) {
-    onChange(rowData[idField]);
-    setV(rowData[nameField]);
-    switchOpenState();
+    const id = rowData[idField];
+    if(id) {
+      onChange(rowData);
+      switchOpenState();
+    }
   }
   function queryData(data) {
     onGetList({
@@ -93,7 +93,7 @@ export default function SearchSelect({ value, options, namespace, onChange }) {
 
   return <Fragment>
     <Button variant="contained" onClick={switchOpenState}>
-      {v}
+      {v || '请选择'}
     </Button>
     <Dialog
       fullScreen={true}
