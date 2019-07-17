@@ -5,7 +5,7 @@ import FormIten from '@/container/Form/FormItemWrapped';
 import checkExpected from './checkExpected';
 
 
-export function getFormItem(field, modelStatus, { namespace, values }) {
+export function getFormItem(field, modelStatus, cfg) {
   const {
     field: fieldName, label, value, extra = '', span,
     rules = [],
@@ -13,6 +13,7 @@ export function getFormItem(field, modelStatus, { namespace, values }) {
     options = {},
     ...rest } = field;
   const formData = modelStatus[options.expectedPath || 'formData'];
+  const { namespace, values, onSaveOther } = cfg;
 
   if (!checkExpected({
     ...formData,
@@ -38,6 +39,7 @@ export function getFormItem(field, modelStatus, { namespace, values }) {
       defaultValue={value}
       namespace={namespace}
       required={rules.indexOf('required') > -1}
+      onSaveOther={onSaveOther}
       {...rest}
     />}
   </Field>

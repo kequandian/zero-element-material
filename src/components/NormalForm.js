@@ -15,6 +15,10 @@ export default function NormalForm(props) {
     initialValues={initialValues}
     onSubmit={onSubmit}
     render={({ handleSubmit, form, submitting, pristine, values }) => {
+      function saveOther(key, value) {
+        values[key] = value;
+        model.update();
+      }
       if (formRef) {
         formRef.current = {
           form,
@@ -30,6 +34,7 @@ export default function NormalForm(props) {
           {fields.map(field => getFormItem(field, modelStatus, {
             namespace,
             values,
+            onSaveOther: saveOther,
           }))}
         </Render>
       </form>

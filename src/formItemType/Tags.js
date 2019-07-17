@@ -1,55 +1,60 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import useBaseForm from 'zero-element/lib/helper/form/useBaseForm';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
 import Paper from '@material-ui/core/Paper';
-import TagFacesIcon from '@material-ui/icons/TagFaces';
 
 const useStyles = makeStyles(theme => ({
-  root: {
+  paper: {
     display: 'flex',
     justifyContent: 'center',
     flexWrap: 'wrap',
     padding: theme.spacing(0.5),
+    width: '100%',
   },
   chip: {
     margin: theme.spacing(0.5),
   },
+  empty: {
+    color: '#666',
+  }
 }));
 
-export default function Tags() {
+export default function Tags(props) {
   const classes = useStyles();
-  const [chipData, setChipData] = React.useState([
-    { key: 0, label: '会议1' },
-    { key: 1, label: '会议2' },
-    { key: 2, label: '会议3' },
-    { key: 4, label: '会议4' },
-    { key: 5, label: '会议5' },
-  ]);
+  const { namespace, options, onChange, onSaveOther } = props;
+  const { field, nameField = 'title' } = options;
+  const formProps = useBaseForm({
+    namespace,
+    modelPath: 'formData',
+  }, { API: {}, fields: [] });
+  const { data = {}, dispatch } = formProps;
+
+  const chipData = data[field];
+
+  useEffect(_ => {
+    if (chipData) {
+      onChange(chipData.map(i => i.id));
+    }
+  }, [chipData])
 
   const handleDelete = chipToDelete => () => {
-    if (chipToDelete.label === 'React') {
-      alert('Why would you want to delete React?! :)');
-      return;
-    }
-
-    setChipData(chips => chips.filter(chip => chip.key !== chipToDelete.key));
+    const fList = chipData.filter(chip => chip.id !== chipToDelete.id);
+    onSaveOther(field, fList);
   };
 
   return (
-    <Paper className={classes.root}>
-      {chipData.map(data => {
-        let icon;
+    <Paper className={classes.paper}>
+      {chipData && chipData.length > 0 ? null : (
+        <span className={classes.empty}>暂无数据</span>
+      )}
 
-        if (data.label === 'React') {
-          icon = <TagFacesIcon />;
-        }
-
+      {chipData && chipData.map(data => {
         return (
           <Chip
-            key={data.key}
-            icon={icon}
-            label={data.label}
+            key={data.id}
+            label={data[nameField]}
             onDelete={handleDelete(data)}
             className={classes.chip}
           />
