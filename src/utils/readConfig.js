@@ -39,7 +39,9 @@ export function getFormItem(field, modelStatus, cfg) {
       defaultValue={value}
       namespace={namespace}
       required={rules.indexOf('required') > -1}
-      onSaveOther={onSaveOther}
+      handle={{
+        onSaveOther,
+      }}
       {...rest}
     />}
   </Field>

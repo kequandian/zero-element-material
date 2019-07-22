@@ -1,6 +1,7 @@
 import React, { Fragment, useState, useRef } from 'react';
 import useBaseList from 'zero-element/lib/helper/list/useBaseList';
 import { useDidMount, useWillUnmount } from 'zero-element/lib/utils/hooks/lifeCycle';
+import { get } from 'zero-element-global/lib/APIConfig';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -43,7 +44,7 @@ function unique(arr) {
   const rst = [];
   const uniqueObj = {};
   arr.forEach(item => {
-    if(item && !uniqueObj[item.id]) {
+    if (item && !uniqueObj[item.id]) {
       uniqueObj[item.id] = true;
       rst.push(item);
     }
@@ -70,12 +71,12 @@ export default function SearchTree(props) {
     modelPath: 'listData_SearchInput',
   }, config);
 
-  const { loading, data, handle, modelStatus } = listProps;
-  const { onGetList, onClearList } = handle;
+  const { loading, data: listData, handle, modelStatus, dispatch } = listProps;
+  const { onClearList } = handle;
 
   useDidMount(_ => {
     if (API.listAPI) {
-      onGetList({});
+      fetchData({});
     }
   });
   useWillUnmount(onClearList);
@@ -95,11 +96,41 @@ export default function SearchTree(props) {
     setOpen(false);
   }
   function queryData(data) {
-    onGetList({
-      current: 1,
-      pageSize: 25,
+    fetchData({
       queryData: data,
+      rest: true,
     });
+  }
+  function fetchData({ current = 1, queryData = {}, rest = false }) {
+    const response = dispatch({
+      type: 'fetchList',
+      API: API.listAPI,
+      MODELPATH: 'listData_SearchInput',
+      DIRECTRETURN: true,
+      payload: {
+        ...queryData,
+        current,
+        pageSize: 25,
+      },
+    });
+    response.then((code, data) => {
+      if (code === 200) {
+        const records = data[get('FIELD_records')];
+        const uniqueRecords = rest ? records : unique([].concat(listData, records));
+
+        dispatch({
+          type: 'save',
+          payload: {
+            'listData_SearchInput': {
+              current: data[get('FIELD_current')],
+              pageSize: data[get('FIELD_pageSize')],
+              total: data[get('FIELD_total')],
+              records: uniqueRecords,
+            },
+          }
+        })
+      }
+    })
   }
 
   return <Fragment>
@@ -144,7 +175,7 @@ export default function SearchTree(props) {
           <NormalTable
             isLoading={loading}
             columns={formatTableFields(fields)}
-            data={data}
+            data={listData}
             options={{
               search: false,
               toolbar: false,

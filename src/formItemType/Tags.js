@@ -23,8 +23,9 @@ const useStyles = makeStyles(theme => ({
 
 export default function Tags(props) {
   const classes = useStyles();
-  const { namespace, options, onChange, onSaveOther } = props;
+  const { namespace, options, onChange, handle } = props;
   const { field, nameField = 'title' } = options;
+  const { onSaveOther } = handle;
   const formProps = useBaseForm({
     namespace,
     modelPath: 'formData',

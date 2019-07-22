@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useEffect, useRef, useReducer } from 'react';
 import MaterialTable from "material-table";
 
 import AddBox from '@material-ui/icons/AddBox';
@@ -69,10 +69,20 @@ const style = {
   boxShadow: 'none',
 };
 export default function NormalTable(props) {
-  return <MaterialTable
-    icons={tableIcons}
-    localization={localization}
-    style={style}
-    {...props}
-  />
+  const Table = useRef(null);
+  const [, forceUpdate] = useReducer(x => x + 1, 0);
+
+  console.log(123, props);
+
+  useEffect(_ => {
+    Table.current = <MaterialTable
+      icons={tableIcons}
+      localization={localization}
+      style={style}
+      {...props}
+    />
+    forceUpdate();
+  }, [props.data, props.isLoading]);
+
+  return Table.current;
 }
