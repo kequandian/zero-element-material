@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import useBaseForm from 'zero-element/lib/helper/form/useBaseForm';
+import { query } from 'zero-element/lib/utils/request';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
@@ -24,8 +25,9 @@ const useStyles = makeStyles(theme => ({
 export default function Tags(props) {
   const classes = useStyles();
   const { namespace, options, onChange, handle } = props;
-  const { field, nameField = 'title' } = options;
+  const { API, field, nameField = 'title' } = options;
   const { onSaveOther } = handle;
+
   const formProps = useBaseForm({
     namespace,
     modelPath: 'formData',
@@ -37,7 +39,22 @@ export default function Tags(props) {
   useEffect(_ => {
     if (chipData) {
       onChange(chipData.map(i => i.id));
+    } else {
+      query(API).then(response => {
+        const { code, data } = response.data;
+        if (code === 200 && Array.isArray(data)) {
+          dispatch({
+            type: 'save',
+            payload: {
+              'formData': {
+                [field]: data,
+              }
+            }
+          });
+        }
+      })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chipData])
 
   const handleDelete = chipToDelete => () => {

@@ -1,6 +1,7 @@
 import React, { useReducer, useRef } from 'react';
 import useBaseForm from 'zero-element/lib/helper/form/useBaseForm';
-import { useDidMount, useWillUnmount } from 'zero-element/lib/utils/hooks/lifeCycle';
+import { useDidMount, useWillMount, useWillUnmount } from 'zero-element/lib/utils/hooks/lifeCycle';
+import { formatAPI } from 'zero-element/lib/utils/format';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -15,6 +16,9 @@ const useStyles = makeStyles(theme => ({
   button: {
     textAlign: 'right',
     padding: theme.spacing(1),
+  },
+  resetButton: {
+    marginRight: 8,
   }
 }));
 
@@ -36,6 +40,16 @@ export default function BaseForm(props) {
   const initData = useRef(data);
   const { onGetOne, onCreateForm, onUpdateForm, onClearForm } = handle;
 
+  useWillMount(_ => {
+    fields.forEach(f => {
+      if (f.options && f.options.API) {
+        f.options.API = formatAPI(f.options.API, {
+          namespace,
+          data: extraData,
+        });
+      }
+    })
+  });
   useDidMount(_ => {
     if (API.getAPI) {
       onGetOne({}).then(({ code, data }) => {
@@ -59,12 +73,12 @@ export default function BaseForm(props) {
       ...extraSubmit,
       ...formRef.current.values,
     };
-    
+
     if (onSubmit) {
       onSubmit(submitData);
       return false;
     }
-    
+
     if (API.updateAPI) {
       onUpdateForm({
         fields: submitData,
@@ -100,8 +114,14 @@ export default function BaseForm(props) {
       formRef.current.onSubmit();
     }
     return <div className={classes.button}>
-      <Button onClick={handleReset}>重置</Button>
-      <Button color="primary" onClick={onSubmit}>保存</Button>
+      <Button className={classes.resetButton} onClick={handleReset}>
+        重置
+      </Button>
+      <Button
+        color="primary" variant="contained"
+        onClick={onSubmit}>
+        保存
+        </Button>
     </div>
   }
 

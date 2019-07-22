@@ -72,8 +72,6 @@ export default function NormalTable(props) {
   const Table = useRef(null);
   const [, forceUpdate] = useReducer(x => x + 1, 0);
 
-  console.log(123, props);
-
   useEffect(_ => {
     Table.current = <MaterialTable
       icons={tableIcons}
@@ -82,6 +80,7 @@ export default function NormalTable(props) {
       {...props}
     />
     forceUpdate();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.data, props.isLoading]);
 
   return Table.current;
