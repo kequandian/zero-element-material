@@ -47,6 +47,9 @@ export default function BaseForm(props) {
           namespace,
           data: extraData,
         });
+      };
+      if (f.value !== undefined) {
+        initData.current[f.field] = f.value;
       }
     })
   });

@@ -1,5 +1,5 @@
 import React from 'react';
 
-export default ({ props, value, defaultValue }) => {
-  return <div {...props}>{value || defaultValue}</div>;
+export default ({ props, value }) => {
+  return <div {...props}>{value}</div>;
 }

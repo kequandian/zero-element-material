@@ -1,7 +1,4 @@
 import React, { Fragment, useState, useRef } from 'react';
-import useBaseList from 'zero-element/lib/helper/list/useBaseList';
-import { useDidMount, useWillUnmount } from 'zero-element/lib/utils/hooks/lifeCycle';
-import { get } from 'zero-element-global/lib/APIConfig';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -15,9 +12,9 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 
 import NormalTable from '../components/NormalTable';
-import NormalForm from '../components/NormalForm';
 
 import { formatTableFields } from '../utils/format';
+import { query } from 'zero-element/lib/utils/request';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -30,6 +27,9 @@ const useStyles = makeStyles(theme => ({
   title: {
     marginLeft: theme.spacing(2),
     flex: 1,
+  },
+  button: {
+    fontSize: '1.25em',
   },
   search: {
     padding: '0 10px',
@@ -54,32 +54,14 @@ function unique(arr) {
 
 export default function SearchTree(props) {
   const classes = useStyles();
-  const { value = [], options, namespace, onChange } = props;
+  const { value = [], options, onChange } = props;
   const selected = useRef([]);
 
   const [open, setOpen] = useState(false);
   const { title = 'title', API = {},
     fields = [], search = {},
   } = options;
-  const { field = 'search', ...restSearch } = search;
-  const config = {
-    API,
-    fields,
-  };
-  const listProps = useBaseList({
-    namespace,
-    modelPath: 'listData_SearchInput',
-  }, config);
-
-  const { loading, data: listData, handle, modelStatus, dispatch } = listProps;
-  const { onClearList } = handle;
-
-  useDidMount(_ => {
-    if (API.listAPI) {
-      fetchData({});
-    }
-  });
-  useWillUnmount(onClearList);
+  const { field, placeholder } = search;
 
   function switchOpenState() {
     setOpen(!open);
@@ -95,42 +77,25 @@ export default function SearchTree(props) {
     onChange(data);
     setOpen(false);
   }
-  function queryData(data) {
-    fetchData({
-      queryData: data,
-      rest: true,
-    });
-  }
-  function fetchData({ current = 1, queryData = {}, rest = false }) {
-    const response = dispatch({
-      type: 'fetchList',
-      API: API.listAPI,
-      MODELPATH: 'listData_SearchInput',
-      DIRECTRETURN: true,
-      payload: {
-        ...queryData,
-        current,
-        pageSize: 25,
-      },
-    });
-    response.then((code, data) => {
-      if (code === 200) {
-        const records = data[get('FIELD_records')];
-        const uniqueRecords = rest ? records : unique([].concat(listData, records));
 
-        dispatch({
-          type: 'save',
-          payload: {
-            'listData_SearchInput': {
-              current: data[get('FIELD_current')],
-              pageSize: data[get('FIELD_pageSize')],
-              total: data[get('FIELD_total')],
-              records: uniqueRecords,
-            },
-          }
-        })
-      }
-    })
+  function fetchTableData(data) {
+    const { search } = data;
+    return new Promise((res, rej) => {
+      query(API.listAPI, {
+        [field]: search,
+      }).then(response => {
+        const { code, data } = response.data;
+        if (code === 200) {
+          res({
+            data: data.records,
+            page: data.total === 0 ? 0 : data.current - 1,
+            totalCount: data.pages,
+          });
+        } else {
+          rej();
+        }
+      });
+    });
   }
 
   return <Fragment>
@@ -146,41 +111,32 @@ export default function SearchTree(props) {
       <div className={classes.root}>
         <AppBar className={classes.appBar}>
           <Toolbar>
-            <IconButton edge="start" color="inherit" onClick={handleSave} aria-label="Close">
+            <IconButton edge="start" color="inherit"
+              onClick={switchOpenState}
+            >
               <CloseIcon />
             </IconButton>
             <Typography variant="h6" className={classes.title}>
               {title}
             </Typography>
+            <Button color="inherit" className={classes.button}
+              onClick={handleSave}
+            >
+              保存
+            </Button>
           </Toolbar>
         </AppBar>
         <div>
-          {field ? (
-            <div className={classes.search}>
-              <NormalForm
-                onSubmit={queryData}
-                config={{
-                  fields: [
-                    {
-                      field, type: 'search-input', options: {
-                        onSubmit: queryData,
-                        ...restSearch,
-                      }
-                    }
-                  ]
-                }}
-              />
-            </div>
-          ) : null}
           <NormalTable
-            isLoading={loading}
+            title={''}
             columns={formatTableFields(fields)}
-            data={listData}
+            data={fetchTableData}
             options={{
-              search: false,
-              toolbar: false,
+              search: Boolean(field),
+              toolbar: true,
               selection: true,
             }}
+            placeholder={placeholder}
             parentChildData={(row, rows) => rows.find(a => a.id === row.parentId)}
             onSelectionChange={handleSelected}
             onChangePage={handleChangePage}

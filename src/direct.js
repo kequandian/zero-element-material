@@ -8,6 +8,7 @@ import BaseForm from '@/container/Form/BaseForm';
 import Hidden from '@/formItemType/Hidden';
 import Plain from '@/formItemType/Plain';
 import Input from '@/formItemType/Input';
+import Radio from '@/formItemType/Radio';
 import Password from '@/formItemType/Password';
 import Tags from '@/formItemType/Tags';
 import SearchInput from '@/formItemType/SearchInput';
@@ -26,6 +27,7 @@ FITSet({
   'hidden': Hidden,
   'plain': Plain,
   'input': Input,
+  'radio': Radio,
   'password': Password,
   'tags': Tags,
   'search-input': SearchInput,

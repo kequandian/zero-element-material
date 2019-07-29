@@ -21,6 +21,7 @@ FITSet({
   hidden: Load('formItemType/Hidden'),
   plain: Load('formItemType/Plain'),
   input: Load('formItemType/Input'),
+  radio: Load('formItemType/Radio'),
   password: Load('formItemType/Password'),
   tags: Load('formItemType/Tags'),
   'search-input': Load('formItemType/SearchInput'),

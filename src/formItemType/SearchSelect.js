@@ -39,7 +39,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function SearchSelect({ value, options, namespace, onChange }) {
+export default function SearchSelect({ value = {}, options, namespace, onChange }) {
   const classes = useStyles();
 
   const [open, setOpen] = useState(false);
@@ -78,7 +78,7 @@ export default function SearchSelect({ value, options, namespace, onChange }) {
   }
   function handleSave(e, rowData) {
     const id = rowData[idField];
-    if(id) {
+    if (id) {
       onChange(rowData);
       switchOpenState();
     }
@@ -104,7 +104,10 @@ export default function SearchSelect({ value, options, namespace, onChange }) {
       <div className={classes.root}>
         <AppBar className={classes.appBar}>
           <Toolbar>
-            <IconButton edge="start" color="inherit" onClick={switchOpenState} aria-label="Close">
+            <IconButton edge="start" color="inherit"
+              onClick={switchOpenState}
+              aria-label="Close"
+            >
               <CloseIcon />
             </IconButton>
             <Typography variant="h6" className={classes.title}>

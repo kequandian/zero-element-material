@@ -52,7 +52,8 @@ const localization = {
     lastTooltip: '末页',
   },
   toolbar: {
-    nRowsSelected: '已选择 {0} 条'
+    nRowsSelected: '已选择 {0} 条',
+    searchPlaceholder: '搜索',
   },
   header: {
     actions: '操作'
@@ -69,18 +70,25 @@ const style = {
   boxShadow: 'none',
 };
 export default function NormalTable(props) {
+  const { placeholder, ...rest } = props;
   const Table = useRef(null);
   const [, forceUpdate] = useReducer(x => x + 1, 0);
 
   useEffect(_ => {
     Table.current = <MaterialTable
       icons={tableIcons}
-      localization={localization}
+      localization={{
+        ...localization,
+        toolbar: {
+          nRowsSelected: '已选择 {0} 条',
+          searchPlaceholder: placeholder,
+        }
+      }}
       style={style}
-      {...props}
+      {...rest}
     />
     forceUpdate();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.data, props.isLoading]);
 
   return Table.current;

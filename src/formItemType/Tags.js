@@ -19,6 +19,7 @@ const useStyles = makeStyles(theme => ({
   },
   empty: {
     color: '#666',
+    userSelect: 'none',
   }
 }));
 
@@ -32,7 +33,7 @@ export default function Tags(props) {
     namespace,
     modelPath: 'formData',
   }, { API: {}, fields: [] });
-  const { data = {}, dispatch } = formProps;
+  const { data = {} } = formProps;
 
   const chipData = data[field];
 
@@ -43,14 +44,7 @@ export default function Tags(props) {
       query(API).then(response => {
         const { code, data } = response.data;
         if (code === 200 && Array.isArray(data)) {
-          dispatch({
-            type: 'save',
-            payload: {
-              'formData': {
-                [field]: data,
-              }
-            }
-          });
+          onSaveOther(field, data);
         }
       })
     }

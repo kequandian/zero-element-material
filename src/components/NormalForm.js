@@ -4,7 +4,9 @@ import { getFormItem } from '@/utils/readConfig';
 import { Render } from 'zero-element-global/lib/layout';
 
 export default function NormalForm(props) {
-  const { initialValues, onSubmit,
+  const {
+    initialValues,
+    onSubmit,
     formRef, model,
     config = {},
     modelStatus = {}, namespace,

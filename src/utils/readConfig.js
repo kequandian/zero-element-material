@@ -13,7 +13,7 @@ export function getFormItem(field, modelStatus, cfg) {
     options = {},
     ...rest } = field;
   const formData = modelStatus[options.expectedPath || 'formData'];
-  const { namespace, values, onSaveOther } = cfg;
+  const { namespace, values = {}, onSaveOther } = cfg;
 
   if (!checkExpected({
     ...formData,
@@ -36,7 +36,8 @@ export function getFormItem(field, modelStatus, cfg) {
       options={options}
       input={input}
       meta={meta}
-      defaultValue={value}
+      defaultValue={Object.prototype.hasOwnProperty.call(values, fieldName) ?
+        values[fieldName] : value}
       namespace={namespace}
       required={rules.indexOf('required') > -1}
       handle={{
