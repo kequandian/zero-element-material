@@ -21,12 +21,15 @@ FITSet({
   hidden: Load('formItemType/Hidden'),
   plain: Load('formItemType/Plain'),
   input: Load('formItemType/Input'),
+  number: Load('formItemType/Number'),
   radio: Load('formItemType/Radio'),
   password: Load('formItemType/Password'),
   tags: Load('formItemType/Tags'),
+  'text-area': Load('formItemType/TextArea'),
   'search-input': Load('formItemType/SearchInput'),
   'search-select': Load('formItemType/SearchSelect'),
   'search-tree': Load('formItemType/SearchTree'),
+  'upload-image': Load('formItemType/UploadImage'),
 });
 
 // AITSet({

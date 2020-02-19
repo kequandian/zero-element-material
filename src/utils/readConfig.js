@@ -11,6 +11,7 @@ export function getFormItem(field, modelStatus, cfg) {
     rules = [],
     type,
     options = {},
+    expect,
     ...rest } = field;
   const formData = modelStatus[options.expectedPath || 'formData'];
   const { namespace, values = {}, onSaveOther } = cfg;
@@ -18,7 +19,7 @@ export function getFormItem(field, modelStatus, cfg) {
   if (!checkExpected({
     ...formData,
     ...values,
-  }, options)) {
+  }, expect)) {
     return null;
   }
 
