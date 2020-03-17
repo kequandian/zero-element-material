@@ -54,7 +54,7 @@ export default function SearchSelect({ value = {}, options, namespace, onChange 
   };
   const listProps = useBaseList({
     namespace,
-    modelPath: 'listData_SearchInput',
+    modelPath: 'listData',
   }, config);
   const { loading, data, handle, modelStatus } = listProps;
   const { onGetList, onClearList } = handle;

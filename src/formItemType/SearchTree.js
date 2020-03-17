@@ -58,8 +58,11 @@ export default function SearchTree(props) {
   const selected = useRef([]);
 
   const [open, setOpen] = useState(false);
-  const { title = 'title', API = {},
+  const {
+    title = 'title', API = {},
     fields = [], search = {},
+    type = 'checkbox',
+    valueField = 'id',
   } = options;
   const { field, placeholder } = search;
 
@@ -73,7 +76,13 @@ export default function SearchTree(props) {
     selected.current = rowData;
   }
   function handleSave() {
-    const data = unique([].concat(value, selected.current));
+    let data;
+    if (type === 'checkbox') {
+      data = unique([].concat(value, selected.current));
+    } else {
+      data = selected.current[0][valueField];
+    }
+
     onChange(data);
     setOpen(false);
   }
@@ -86,11 +95,19 @@ export default function SearchTree(props) {
       }).then(response => {
         const { code, data } = response.data;
         if (code === 200) {
-          res({
-            data: data.records,
-            page: data.total === 0 ? 0 : data.current - 1,
-            totalCount: data.pages,
-          });
+          if (Array.isArray(data)) {
+            res({
+              data: Array.isArray(data) ? data : data.records,
+              page: 0,
+              totalCount: 0,
+            });
+          } else {
+            res({
+              data: data.records,
+              page: data.total === 0 ? 0 : data.current - 1,
+              totalCount: data.pages,
+            });
+          }
         } else {
           rej();
         }
@@ -100,7 +117,7 @@ export default function SearchTree(props) {
 
   return <Fragment>
     <Button variant="contained" onClick={switchOpenState}>
-      点击选择
+      {typeof value === 'string' ? value : '点击选择'}
     </Button>
     <Dialog
       fullScreen={true}
