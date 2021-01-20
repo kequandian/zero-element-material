@@ -1,5 +1,5 @@
 import React from 'react';
-import { Render } from 'zero-element-global/lib/formItemType';
+import { Render } from 'zero-element/lib/config/formItemType';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({

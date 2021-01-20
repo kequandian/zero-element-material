@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form } from 'react-final-form';
 import { getFormItem } from '@/utils/readConfig';
-import { Render } from 'zero-element-global/lib/layout';
+import { Render } from 'zero-element/lib/config/layout';
 
 export default function NormalForm(props) {
   const {

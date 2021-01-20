@@ -1,6 +1,6 @@
-import { set as LayoutSet } from 'zero-element-global/lib/layout';
-import { set as CSet } from 'zero-element-global/lib/container';
-import { set as FITSet } from 'zero-element-global/lib/formItemType';
+import { set as LayoutSet } from 'zero-element/lib/config/layout';
+import { set as CSet } from 'zero-element/lib/config/container';
+import { set as FITSet } from 'zero-element/lib/config/formItemType';
 
 
 import BaseForm from '@/container/Form/BaseForm';
