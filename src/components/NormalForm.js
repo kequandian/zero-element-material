@@ -2,6 +2,7 @@ import React from 'react';
 import { Form } from 'react-final-form';
 import { getFormItem } from '@/utils/readConfig';
 import { Render } from 'zero-element/lib/config/layout';
+import { setPageData } from 'zero-element/lib/Model'
 
 export default function NormalForm(props) {
   const {
@@ -19,7 +20,6 @@ export default function NormalForm(props) {
     render={({ handleSubmit, form, submitting, pristine, values }) => {
       function saveOther(key, value) {
         values[key] = value;
-        model.update();
       }
       if (formRef) {
         formRef.current = {
@@ -27,7 +27,7 @@ export default function NormalForm(props) {
           values,
           onSubmit: handleSubmit,
         };
-        model.setState('formData', values);
+        setPageData('formData', values);
       }
       return <form
         onSubmit={handleSubmit}
